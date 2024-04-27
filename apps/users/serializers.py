@@ -14,11 +14,13 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User 
         fields = ('id', 'username', 'first_name', 
-                  'last_name', 'email', 'phone_number', 'password', 'confirm_password')
+                  'last_name', 'age', 'email', 'phone_number', 'password', 'confirm_password')
         
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
             raise serializers.ValidationError({'password':'Пароли отличаются'})
+        if '+996' not in attrs['phone_number']:
+            raise serializers.ValidationError({'phone_number':'Введённый номер не соответсвует стандартам КР (+996)'})
         return attrs 
     
     def create(self, validated_data):
@@ -26,6 +28,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
+            age=validated_data['age'],
             email=validated_data['email'],
             phone_number=validated_data['phone_number']
         )
